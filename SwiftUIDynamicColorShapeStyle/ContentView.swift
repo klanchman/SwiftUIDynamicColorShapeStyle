@@ -39,28 +39,20 @@ struct ContentView: View {
 struct DynamicColorShapeStyle: ShapeStyle {
     let light: Color
     let dark: Color
-    var fallback = Color.primary
 
     func resolve(in environment: EnvironmentValues) -> some ShapeStyle {
-        switch environment.colorScheme {
-        case .light:
+        if environment.colorScheme == .light {
             return light
-        case .dark:
+        } else {
             return dark
-        @unknown default:
-            return fallback
         }
     }
 }
 
 // This lets us use `.dynamic(light:dark:)` in places that take a ShapeStyle
 extension ShapeStyle where Self == DynamicColorShapeStyle {
-    static func `dynamic`(
-        light: Color,
-        dark: Color,
-        fallback: Color = Color.primary
-    ) -> DynamicColorShapeStyle {
-        return DynamicColorShapeStyle(light: light, dark: dark, fallback: fallback)
+    static func `dynamic`(light: Color, dark: Color) -> DynamicColorShapeStyle {
+        DynamicColorShapeStyle(light: light, dark: dark)
     }
 }
 
